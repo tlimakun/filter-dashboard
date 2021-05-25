@@ -16,6 +16,14 @@ def filter_layout(days):
             generate_date_picker_range(days)
         ], style={"marginBottom": 5}),
         
+        # Filter fields division
+        html.Div([
+            
+        ], style={"borderTop": "thin lightgrey solid",
+                  "borderBottom": "thin lightgrey solid",
+                  "paddingTop": 5,
+                  "paddingBottom": 5}),
+        
         # Data table division
         html.Div([
             # Total visitors label
