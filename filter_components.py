@@ -98,6 +98,15 @@ def generate_two_inputs_components(min_id, max_id, min=None, max=None):
         )
     ])
     
+def generate_clinics_checklist():
+    """
+    Generate clinics selections using Checklist from Dash Core Components.
+    """
+    
+    return dcc.Checklist(
+        id="clinics-checklist"
+    )
+    
 def generate_total_visitors_label():
     """
     Generate total visitors label using Label from Dash Html Components.

@@ -41,6 +41,34 @@ def callback_age_inputs(app, days):
         max_age = max(filtered["age"])
         
         return min_age, min_age, max_age, max_age
+    
+def callback_clinics_checklist(app, days):
+    """
+    Update clinics checklist options and initial values.
+    """
+    
+    @app.callback(
+        Output("clinics-checklist", "options"),
+        Output("clinics-checklist", "value"),
+        Input("date-picker-range", "start_date"),
+        Input("date-picker-range", "end_date")
+    )
+    def update_clinics_checklist(start_date, end_date):
+        filtered = filter_data_by_date(days, start_date, end_date)
+        
+        all_clinics = set()
+        for day in days.values():
+            all_clinics = all_clinics.union(day["clinic"].unique())
+            
+        available_clinics = filtered["clinic"].unique()
+        disabled_clinics = all_clinics.difference(available_clinics)
+        
+        options = [{"label": clinic, "value": clinic, "disabled": True} if clinic in disabled_clinics
+                   else {"label": clinic, "value": clinic, "disabled": False} for clinic in all_clinics]
+        options = sorted(options, key=(lambda key: key["label"]))
+        options = sorted(options, key=(lambda key: key["disabled"]))
+        
+        return options, available_clinics
 
 def callback_data_table(app, days):
     """

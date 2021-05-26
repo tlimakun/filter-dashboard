@@ -71,7 +71,19 @@ def filter_layout(days):
                         max=24
                     )
                 ])
-            ], style={"width": "20%"})
+            ], style={"display": "inline-block",
+                      "width": "20%"}),
+            
+            # Second division
+            html.Div([
+                # Clinic checklist division
+                html.Div([
+                    html.Label(children="Clinic : "),
+                    generate_clinics_checklist()
+                ])
+            ], style={"display": "inline-block",
+                      "width": "80%",
+                      "verticalAlign": "top",})
         ], style={"borderTop": "thin lightgrey solid",
                   "borderBottom": "thin lightgrey solid",
                   "paddingTop": 5,
