@@ -31,11 +31,21 @@ def callback_data_table(app, days):
         Input("date-picker-range", "start_date"),
         Input("date-picker-range", "end_date"),
         Input("gender-checklist", "value"),
-        Input("final-status-checklist", "value")
+        Input("final-status-checklist", "value"),
+        Input("appointment-checklist", "value")
     )
-    def update_data_table(start_date, end_date, gender, final_status):
+    def update_data_table(start_date, end_date, gender, final_status, appointment):
         # Filter data between given start date and end date.
         filtered = filter_data_by_date(days, start_date, end_date)
+        
+        # Filter appointment
+        if len(appointment) == 1:
+            if 1 in appointment:
+                filtered = filtered[(filtered["visit_dt"].dt.minute.isin([0, 30])) & (filtered["visit_dt"].dt.second == 0)]
+            elif 0 in appointment:
+                filtered = filtered[(~filtered["visit_dt"].dt.minute.isin([0, 30])) | (filtered["visit_dt"].dt.second != 0)]
+        elif len(appointment) == 0:
+            filtered = filtered[filtered["vn"] == -1]
         
         # Filter Gender and Final Status
         filtered = filtered[(filtered["gender"].isin(gender)) &

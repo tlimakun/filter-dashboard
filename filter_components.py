@@ -3,6 +3,9 @@ import dash_core_components as dcc
 import dash_table as table
 from datetime import timedelta
 
+checklist_labelStyle={"marginRight": 8,
+                      "display": "inline-block"}
+
 def generate_date_picker_range(days):
     """
     Generate date picker using DatePickerRange from Dash Core Components.
@@ -34,10 +37,7 @@ def generate_gender_checklist(days):
         id="gender-checklist",
         options=[{"label": g, "value": g} for g in gender],
         value=list(gender),
-        labelStyle={
-            "marginRight": 8,
-            "display": "inline-block"
-        }
+        labelStyle=checklist_labelStyle
     )
     
 def generate_final_status_checklist(days):
@@ -53,10 +53,20 @@ def generate_final_status_checklist(days):
         id="final-status-checklist",
         options=[{"label": fs, "value": fs} for fs in final_status],
         value=list(final_status),
-        labelStyle={
-            "marginRight": 8,
-            "display": "inline-block"
-        }
+        labelStyle=checklist_labelStyle
+    )
+    
+def generate_appointment_checklist():
+    """
+    Generate appointment selection using Checklist from Dash Core Components.
+    """
+    
+    return dcc.Checklist(
+        id="appointment-checklist",
+        options=[{"label": "นัดหมาย", "value": 1},
+                 {"label": "walk-in", "value": 0}],
+        value=[1, 0],
+        labelStyle=checklist_labelStyle
     )
     
 def generate_total_visitors_label():

@@ -33,6 +33,12 @@ def filter_layout(days):
                 html.Div([
                     html.Label(children="Final Status : "),
                     generate_final_status_checklist(days)
+                ], style=checklist_style),
+                
+                # Appointment checklist division
+                html.Div([
+                    html.Label(children="Appointment : "),
+                    generate_appointment_checklist()
                 ], style=checklist_style)
             ])
         ], style={"borderTop": "thin lightgrey solid",
