@@ -88,10 +88,11 @@ def callback_data_table(app, days):
         Input("min-start-time-input", "value"),
         Input("max-start-time-input", "value"),
         Input("min-total-time-input", "value"),
-        Input("max-total-time-input", "value")
+        Input("max-total-time-input", "value"),
+        Input("clinics-checklist", "value")
     )
     def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
-                          min_start_time, max_start_time, min_total_time, max_total_time):
+                          min_start_time, max_start_time, min_total_time, max_total_time, clinics):
         # Filter data between given start date and end date.
         filtered = filter_data_by_date(days, start_date, end_date)
         
@@ -104,10 +105,11 @@ def callback_data_table(app, days):
         elif len(appointment) == 0:
             filtered = filtered[filtered["vn"] == -1]
         
-        # Filter gender, final status, and age
+        # Filter gender, final status, age, and clinics
         filtered = filtered[(filtered["gender"].isin(gender)) &
                             (filtered["final_status"].isin(final_status)) &
-                            (filtered["age"] >= min_age) & (filtered["age"] <= max_age)]
+                            (filtered["age"] >= min_age) & (filtered["age"] <= max_age) &
+                            (filtered["clinic"].isin(clinics))]
         
         # Filter visitors with start time between min_start_time and max_start_time
         filtered["start_time"] = filtered[[col for col in filtered.columns if col.endswith("_dt") and col != "visit_dt"]].min(axis=1)
