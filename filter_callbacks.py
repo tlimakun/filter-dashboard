@@ -20,6 +20,27 @@ def filter_data_by_date(days, start_date, end_date):
     
     return filtered
 
+def callback_age_inputs(app, days):
+    """
+    Update max, min and initial values of age inputs.
+    """
+    
+    @app.callback(
+        Output("min-age-input", "min"),
+        Output("min-age-input", "value"),
+        Output("max-age-input", "max"),
+        Output("max-age-input", "value"),
+        Input("date-picker-range", "start_date"),
+        Input("date-picker-range", "end_date")
+    )
+    def update_age_inputs(start_date, end_date):
+        filtered = filter_data_by_date(days, start_date, end_date)
+        
+        min_age = min(filtered["age"])
+        max_age = max(filtered["age"])
+        
+        return min_age, min_age, max_age, max_age
+
 def callback_data_table(app, days):
     """
     Update data in "data-table" table and number of visitors in "total-visitors-label" label.
@@ -32,9 +53,11 @@ def callback_data_table(app, days):
         Input("date-picker-range", "end_date"),
         Input("gender-checklist", "value"),
         Input("final-status-checklist", "value"),
-        Input("appointment-checklist", "value")
+        Input("appointment-checklist", "value"),
+        Input("min-age-input", "value"),
+        Input("max-age-input", "value")
     )
-    def update_data_table(start_date, end_date, gender, final_status, appointment):
+    def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age):
         # Filter data between given start date and end date.
         filtered = filter_data_by_date(days, start_date, end_date)
         
@@ -47,9 +70,10 @@ def callback_data_table(app, days):
         elif len(appointment) == 0:
             filtered = filtered[filtered["vn"] == -1]
         
-        # Filter Gender and Final Status
+        # Filter Gender, Final Status, and Age
         filtered = filtered[(filtered["gender"].isin(gender)) &
-                            (filtered["final_status"].isin(final_status))]
+                            (filtered["final_status"].isin(final_status)) &
+                            (filtered["age"] >= min_age) & (filtered["age"] <= max_age)]
         
         # Change format in datetime columns.
         for col in [col for col in filtered.columns if col.endswith("_dt")]:

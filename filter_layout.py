@@ -39,8 +39,17 @@ def filter_layout(days):
                 html.Div([
                     html.Label(children="Appointment : "),
                     generate_appointment_checklist()
-                ], style=checklist_style)
-            ])
+                ], style=checklist_style),
+                
+                # Age division
+                html.Div([
+                    html.Label(children="Age : "),
+                    generate_two_inputs_components(
+                        min_id="min-age-input",
+                        max_id="max-age-input"
+                    )
+                ])
+            ], style={"width": "20%"})
         ], style={"borderTop": "thin lightgrey solid",
                   "borderBottom": "thin lightgrey solid",
                   "paddingTop": 5,
