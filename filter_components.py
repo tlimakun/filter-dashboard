@@ -69,6 +69,31 @@ def generate_appointment_checklist():
         labelStyle=checklist_labelStyle
     )
     
+def generate_two_inputs_components(min_id, max_id):
+    """
+    Generate html component that receive two inputs using Input from Dash Core Components.
+    """
+    input_style={"display": "inline-block",
+                 "width": "20%"}
+    
+    return html.Div([
+        dcc.Input(
+            id=min_id,
+            type="number",
+            step=1,
+            style=input_style
+        ),
+        html.Label("to", style={"display": "inline-block",
+                               "width": "10%",
+                               "textAlign": "center"}),
+        dcc.Input(
+            id=max_id,
+            type="number",
+            step=1,
+            style=input_style
+        )
+    ])
+    
 def generate_total_visitors_label():
     """
     Generate total visitors label using Label from Dash Html Components.
