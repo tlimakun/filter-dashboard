@@ -69,7 +69,7 @@ def generate_appointment_checklist():
         labelStyle=checklist_labelStyle
     )
     
-def generate_two_inputs_components(min_id, max_id):
+def generate_two_inputs_components(min_id, max_id, min=None, max=None):
     """
     Generate html component that receive two inputs using Input from Dash Core Components.
     """
@@ -79,6 +79,8 @@ def generate_two_inputs_components(min_id, max_id):
     return html.Div([
         dcc.Input(
             id=min_id,
+            min=min,
+            value=min,
             type="number",
             step=1,
             style=input_style
@@ -88,6 +90,8 @@ def generate_two_inputs_components(min_id, max_id):
                                "textAlign": "center"}),
         dcc.Input(
             id=max_id,
+            max=max,
+            value=max,
             type="number",
             step=1,
             style=input_style
