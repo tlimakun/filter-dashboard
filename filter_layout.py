@@ -2,7 +2,7 @@ from dash_core_components.Checklist import Checklist
 import dash_html_components as html
 from filter_components import *
 
-checklist_style = {"marginBottom": 10}
+marginBottom = {"marginBottom": 10}
 
 def filter_layout(days):
     """
@@ -27,19 +27,19 @@ def filter_layout(days):
                 html.Div([
                     html.Label(children="Gender : "),
                     generate_gender_checklist(days)
-                ], style=checklist_style),
+                ], style=marginBottom),
                 
                 # Final status checklist division
                 html.Div([
                     html.Label(children="Final Status : "),
                     generate_final_status_checklist(days)
-                ], style=checklist_style),
+                ], style=marginBottom),
                 
                 # Appointment checklist division
                 html.Div([
                     html.Label(children="Appointment : "),
                     generate_appointment_checklist()
-                ], style=checklist_style),
+                ], style=marginBottom),
                 
                 # Age division
                 html.Div([
@@ -47,6 +47,17 @@ def filter_layout(days):
                     generate_two_inputs_components(
                         min_id="min-age-input",
                         max_id="max-age-input"
+                    )
+                ], style=marginBottom),
+                
+                # ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ division
+                html.Div([
+                    html.Label(children="ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ (hrs) : "),
+                    generate_two_inputs_components(
+                        min_id="min-start-input",
+                        max_id="max-start-input",
+                        min=0,
+                        max=24
                     )
                 ])
             ], style={"width": "20%"})
