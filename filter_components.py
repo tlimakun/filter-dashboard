@@ -31,7 +31,7 @@ def generate_gender_checklist(days):
         gender = gender.union(day["gender"].unique())
     
     return dcc.Checklist(
-        id="sex-checklist",
+        id="gender-checklist",
         options=[{"label": g, "value": g} for g in gender],
         value=list(gender),
         labelStyle={
