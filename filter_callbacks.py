@@ -29,11 +29,17 @@ def callback_data_table(app, days):
         Output("total-visitors-label", "children"),
         Output("data-table", "data"),
         Input("date-picker-range", "start_date"),
-        Input("date-picker-range", "end_date")
+        Input("date-picker-range", "end_date"),
+        Input("gender-checklist", "value"),
+        Input("final-status-checklist", "value")
     )
-    def update_data_table(start_date, end_date):
+    def update_data_table(start_date, end_date, gender, final_status):
         # Filter data between given start date and end date.
         filtered = filter_data_by_date(days, start_date, end_date)
+        
+        # Filter Gender and Final Status
+        filtered = filtered[(filtered["gender"].isin(gender)) &
+                            (filtered["final_status"].isin(final_status))]
         
         # Change format in datetime columns.
         for col in [col for col in filtered.columns if col.endswith("_dt")]:
