@@ -55,9 +55,11 @@ def callback_data_table(app, days):
         Input("final-status-checklist", "value"),
         Input("appointment-checklist", "value"),
         Input("min-age-input", "value"),
-        Input("max-age-input", "value")
+        Input("max-age-input", "value"),
+        Input("min-start-input", "value"),
+        Input("max-start-input", "value")
     )
-    def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age):
+    def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age, min_start, max_start):
         # Filter data between given start date and end date.
         filtered = filter_data_by_date(days, start_date, end_date)
         
@@ -70,10 +72,17 @@ def callback_data_table(app, days):
         elif len(appointment) == 0:
             filtered = filtered[filtered["vn"] == -1]
         
-        # Filter Gender, Final Status, and Age
+        # Filter gender, final status, and age
         filtered = filtered[(filtered["gender"].isin(gender)) &
                             (filtered["final_status"].isin(final_status)) &
                             (filtered["age"] >= min_age) & (filtered["age"] <= max_age)]
+        
+        # Filter visitors with start time between min_start and max_start
+        filtered["start_time"] = filtered[[col for col in filtered.columns if col.endswith("_dt") and col != "visit_dt"]].min(axis=1)
+        filtered = filtered[(filtered["start_time"].dt.hour >= min_start) & (filtered["start_time"].dt.hour <= max_start)]
+        
+        # Drop unused columns
+        filtered.drop(["start_time"], axis=1)
         
         # Change format in datetime columns.
         for col in [col for col in filtered.columns if col.endswith("_dt")]:
