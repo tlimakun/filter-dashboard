@@ -11,7 +11,7 @@ def load_data(filename):
     
     # Change column names to English.
     for day in days.values():
-        day.columns = ["vn", "sex", "age", "visit_dt", "clinic_code", "clinic",
+        day.columns = ["vn", "gender", "age", "visit_dt", "clinic_code", "clinic",
                        "kios_g_dt", "kios_dt", "screen_dt", "send_doc_dt",
                        "doc_call_dt", "doc_begin_dt", "doc_submit_dt", "nurse_dt",
                        "payment_dt", "pharmacy_dt", "final_status"]
