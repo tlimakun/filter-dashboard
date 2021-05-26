@@ -21,6 +21,44 @@ def generate_date_picker_range(days):
         display_format="D/M/YYYY"
     )
     
+def generate_gender_checklist(days):
+    """
+    Generate gender selection using Checklist from Dash Core Components.
+    """
+    
+    gender = set()
+    for day in days.values():
+        gender = gender.union(day["gender"].unique())
+    
+    return dcc.Checklist(
+        id="sex-checklist",
+        options=[{"label": g, "value": g} for g in gender],
+        value=list(gender),
+        labelStyle={
+            "marginRight": 8,
+            "display": "inline-block"
+        }
+    )
+    
+def generate_final_status_checklist(days):
+    """
+    Generate final status selection using Checklist from Dash Core Components.
+    """
+    
+    final_status = set()
+    for day in days.values():
+        final_status = final_status.union(day["final_status"].unique())
+    
+    return dcc.Checklist(
+        id="final-status-checklist",
+        options=[{"label": fs, "value": fs} for fs in final_status],
+        value=list(final_status),
+        labelStyle={
+            "marginRight": 8,
+            "display": "inline-block"
+        }
+    )
+    
 def generate_total_visitors_label():
     """
     Generate total visitors label using Label from Dash Html Components.
