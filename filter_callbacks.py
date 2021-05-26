@@ -1,5 +1,6 @@
 from dash.dependencies import Input, Output
 import pandas as pd
+import numpy as np
 from datetime import date
 
 def filter_data_by_date(days, start_date, end_date):
@@ -56,10 +57,13 @@ def callback_data_table(app, days):
         Input("appointment-checklist", "value"),
         Input("min-age-input", "value"),
         Input("max-age-input", "value"),
-        Input("min-start-input", "value"),
-        Input("max-start-input", "value")
+        Input("min-start-time-input", "value"),
+        Input("max-start-time-input", "value"),
+        Input("min-total-time-input", "value"),
+        Input("max-total-time-input", "value")
     )
-    def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age, min_start, max_start):
+    def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
+                          min_start_time, max_start_time, min_total_time, max_total_time):
         # Filter data between given start date and end date.
         filtered = filter_data_by_date(days, start_date, end_date)
         
@@ -77,12 +81,17 @@ def callback_data_table(app, days):
                             (filtered["final_status"].isin(final_status)) &
                             (filtered["age"] >= min_age) & (filtered["age"] <= max_age)]
         
-        # Filter visitors with start time between min_start and max_start
+        # Filter visitors with start time between min_start_time and max_start_time
         filtered["start_time"] = filtered[[col for col in filtered.columns if col.endswith("_dt") and col != "visit_dt"]].min(axis=1)
-        filtered = filtered[(filtered["start_time"].dt.hour >= min_start) & (filtered["start_time"].dt.hour <= max_start)]
+        filtered = filtered[(filtered["start_time"].dt.hour >= min_start_time) & (filtered["start_time"].dt.hour < max_start_time)]
+        
+        # Filter visitors with total time in process between min_total_time and max_total_time
+        filtered["end_time"] = filtered[[col for col in filtered.columns if col.endswith("_dt") and col != "visit_dt"]].max(axis=1)
+        filtered["total_time"] = (filtered["end_time"] - filtered["start_time"]) / np.timedelta64(1, 'h')
+        filtered = filtered[(filtered["total_time"] >= min_total_time) & (filtered["total_time"] < max_total_time )]
         
         # Drop unused columns
-        filtered.drop(["start_time"], axis=1)
+        filtered.drop(["start_time", "end_time", "total_time"], axis=1)
         
         # Change format in datetime columns.
         for col in [col for col in filtered.columns if col.endswith("_dt")]:
