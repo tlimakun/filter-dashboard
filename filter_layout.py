@@ -54,8 +54,19 @@ def filter_layout(days):
                 html.Div([
                     html.Label(children="ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ (hrs) : "),
                     generate_two_inputs_components(
-                        min_id="min-start-input",
-                        max_id="max-start-input",
+                        min_id="min-start-time-input",
+                        max_id="max-start-time-input",
+                        min=0,
+                        max=24
+                    )
+                ], style=marginBottom),
+                
+                # ระยะเวลาที่ visitors ใช้ทั้งระบบ
+                html.Div([
+                    html.Label(children="ระยะเวลาที่ visitors ใช้ทั้งระบบ (hrs) : "),
+                    generate_two_inputs_components(
+                        min_id="min-total-time-input",
+                        max_id="max-total-time-input",
                         min=0,
                         max=24
                     )
