@@ -1,5 +1,8 @@
+from dash_core_components.Checklist import Checklist
 import dash_html_components as html
 from filter_components import *
+
+checklist_style = {"marginBottom": 10}
 
 def filter_layout(days):
     """
@@ -18,7 +21,20 @@ def filter_layout(days):
         
         # Filter fields division
         html.Div([
-            
+            # First division
+            html.Div([
+                # Gender checklist division
+                html.Div([
+                    html.Label(children="Gender : "),
+                    generate_gender_checklist(days)
+                ], style=checklist_style),
+                
+                # Final status checklist division
+                html.Div([
+                    html.Label(children="Final Status : "),
+                    generate_final_status_checklist(days)
+                ], style=checklist_style)
+            ])
         ], style={"borderTop": "thin lightgrey solid",
                   "borderBottom": "thin lightgrey solid",
                   "paddingTop": 5,
