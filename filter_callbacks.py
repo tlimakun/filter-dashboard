@@ -156,3 +156,23 @@ def callback_clinics_checklist(app, days):
         options = sorted(options, key=(lambda key: key["disabled"]))
         
         return options, available_clinics
+    
+def callback_checkpoints_ordering_radioItems(app, days):
+    """
+    Update checkpoints radioItems if there is no any checkpoint in dropdown, disable radioItems.
+    """
+    
+    @app.callback(
+        Output("checkpoints-ordering-radioItems", "options"),
+        Output("checkpoints-ordering-radioItems", "value"),
+        Input("checkpoints-ordering-dropdown", "value")
+    )
+    def update_checkpoints_ordering_radioItems(checkpoints):
+        if checkpoints is None or len(checkpoints) <= 1:
+            options = [{"label": "ใช่", "value": 1, "disabled": True},
+                       {"label": "ไม่ใช่", "value": 0, "disabled": True}]
+        else:
+            options = [{"label": "ใช่", "value": 1},
+                       {"label": "ไม่ใช่", "value": 0}]
+        
+        return options, 1
