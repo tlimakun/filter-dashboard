@@ -179,12 +179,17 @@ def generate_checkpoints_ordering_division(label):
                 id="checkpoints-ordering-dropdown",
                 multi=True
             )
-        ]),
+        ], style={"display": "inline-block",
+                  "width": "85%",
+                  "verticalAlign": "top",
+                  "marginRight": "1%"}),
         html.Div([
             html.Label("เรียงตามลำดับหรือไม่:"),
             dcc.RadioItems(
                 id="checkpoints-ordering-radioItems",
                 labelStyle=checklist_labelStyle
             )
-        ])
+        ], style={"display": "inline-block",
+                  "width": "14%",
+                  "verticalAlign": "top"})
     ], style=marginBottom)
