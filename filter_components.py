@@ -33,37 +33,24 @@ def generate_date_picker_range(label, days):
         )
     ], style=marginBottom)
     
-def generate_gender_checklist(days):
+def generate_possible_values_checklist(label, id, days, column):
     """
-    Generate gender selection using Checklist from Dash Core Components.
+    Generate possible values selection using Checklist from Dash Core Components.
     """
     
-    gender = set()
+    values = set()
     for day in days.values():
-        gender = gender.union(day["gender"].unique())
+        values = values.union(day[column].unique())
     
-    return dcc.Checklist(
-        id="gender-checklist",
-        options=[{"label": g, "value": g} for g in gender],
-        value=list(gender),
-        labelStyle=checklist_labelStyle
-    )
-    
-def generate_final_status_checklist(days):
-    """
-    Generate final status selection using Checklist from Dash Core Components.
-    """
-    
-    final_status = set()
-    for day in days.values():
-        final_status = final_status.union(day["final_status"].unique())
-    
-    return dcc.Checklist(
-        id="final-status-checklist",
-        options=[{"label": fs, "value": fs} for fs in final_status],
-        value=list(final_status),
-        labelStyle=checklist_labelStyle
-    )
+    return html.Div([
+        html.Label(children=label),
+        dcc.Checklist(
+            id=id,
+            options=[{"label": value, "value": value} for value in values],
+            value=list(values),
+            labelStyle=checklist_labelStyle
+        )
+    ], style=marginBottom)
     
 def generate_appointment_checklist():
     """
