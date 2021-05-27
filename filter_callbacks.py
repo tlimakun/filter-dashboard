@@ -157,9 +157,38 @@ def callback_clinics_checklist(app, days):
         
         return options, available_clinics
     
+def callback_checkpoints_ordering_dropdown(app, days):
+    """
+    Update items in checkpoints ordering dropdown.
+    """
+    
+    @app.callback(
+        Output("checkpoints-ordering-dropdown", "options"),
+        Input("kios-g-column-radioItems", "value"),
+        Input("kios-column-radioItems", "value"),
+        Input("screen-column-radioItems", "value"),
+        Input("send-doc-column-radioItems", "value"),
+        Input("doc-call-column-radioItems", "value"),
+        Input("doc-begin-column-radioItems", "value"),
+        Input("doc-submit-column-radioItems", "value"),
+        Input("nurse-column-radioItems", "value"),
+        Input("payment-column-radioItems", "value"),
+        Input("pharmacy-column-radioItems", "value")
+    )
+    def update_checkpoints_ordering_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt):
+        checkpoints = []
+        
+        for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
+            if value == 1 or value == 2:
+                checkpoints.append({"label": col, "value": col})
+                
+        return checkpoints
+    
 def callback_checkpoints_ordering_radioItems(app, days):
     """
-    Update checkpoints radioItems if there is no any checkpoint in dropdown, disable radioItems.
+    Update checkpoints ordering radioItems if there is no any checkpoint in dropdown, disable radioItems.
     """
     
     @app.callback(
