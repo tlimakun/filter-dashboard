@@ -166,8 +166,8 @@ def filter_layout(days):
                     
                     # More and Less button
                     generate_more_less_button(
-                        more_btn_id="more-time-btw-div-btn",
-                        less_btn_id="less-time-btw-div-btn"
+                        more_btn_id="more-time-btw-checkpoints-div-btn",
+                        less_btn_id="less-time-btw-checkpoints-div-btn"
                     )
                 ], style={"display": "inline-block",
                           "width": "29%",
