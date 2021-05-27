@@ -42,35 +42,29 @@ def filter_layout(days):
                 ], style=marginBottom),
                 
                 # Age division
-                html.Div([
-                    html.Label(children="Age:"),
-                    generate_two_inputs_components(
-                        min_id="min-age-input",
-                        max_id="max-age-input"
-                    )
-                ], style=marginBottom),
+                generate_two_inputs_components(
+                    label="Age:",
+                    min_id="min-age-input",
+                    max_id="max-age-input"
+                ),
                 
                 # ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ division
-                html.Div([
-                    html.Label(children="ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ (hrs):"),
-                    generate_two_inputs_components(
-                        min_id="min-start-time-input",
-                        max_id="max-start-time-input",
-                        min=0,
-                        max=24
-                    )
-                ], style=marginBottom),
+                generate_two_inputs_components(
+                    label="ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ (hrs):",
+                    min_id="min-start-time-input",
+                    max_id="max-start-time-input",
+                    min=0,
+                    max=24
+                ),
                 
                 # ระยะเวลาที่ visitors ใช้ทั้งระบบ
-                html.Div([
-                    html.Label(children="ระยะเวลาที่ visitors ใช้ทั้งระบบ (hrs):"),
-                    generate_two_inputs_components(
-                        min_id="min-total-time-input",
-                        max_id="max-total-time-input",
-                        min=0,
-                        max=24
-                    )
-                ])
+                generate_two_inputs_components(
+                    label="ระยะเวลาที่ visitors ใช้ทั้งระบบ (hrs):",
+                    min_id="min-total-time-input",
+                    max_id="max-total-time-input",
+                    min=0,
+                    max=24
+                )
             ], style={"display": "inline-block",
                       "width": "20%",
                       "marginRight": "1%"}),
@@ -87,8 +81,7 @@ def filter_layout(days):
                       "verticalAlign": "top",})
         ], style={"borderTop": "thin lightgrey solid",
                   "borderBottom": "thin lightgrey solid",
-                  "paddingTop": 5,
-                  "paddingBottom": 5}),
+                  "paddingTop": 5}),
         
         # Data table division
         html.Div([
