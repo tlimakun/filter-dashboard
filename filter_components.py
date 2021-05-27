@@ -105,14 +105,17 @@ def generate_two_inputs_components(label, min_id, max_id, min=None, max=None):
         ])
     ], style=marginBottom)
     
-def generate_clinics_checklist():
+def generate_clinics_checklist(label):
     """
     Generate clinics selections using Checklist from Dash Core Components.
     """
     
-    return dcc.Checklist(
-        id="clinics-checklist"
-    )
+    return html.Div([
+        html.Label(children=label),
+        dcc.Checklist(
+            id="clinics-checklist"
+        )
+    ], style=marginBottom)
     
 def generate_require_datetime_radioItems(label, id):
     """

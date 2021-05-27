@@ -72,10 +72,7 @@ def filter_layout(days):
             # Second division
             html.Div([
                 # Clinic checklist division
-                html.Div([
-                    html.Label(children="Clinic:"),
-                    generate_clinics_checklist()
-                ])
+                generate_clinics_checklist("Clinics:")
             ], style={"display": "inline-block",
                       "width": "79%",
                       "verticalAlign": "top",})
