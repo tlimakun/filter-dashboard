@@ -1,4 +1,3 @@
-from dash_core_components.Checklist import Checklist
 import dash_html_components as html
 from filter_components import *
 
@@ -162,12 +161,12 @@ def filter_layout(days):
                     generate_time_between_label(label="ระยะเวลาที่ visitors ใช้ระหว่าง 2 checkpoints (hrs):"),
                     
                     # Time between checkpoints main division
-                    html.Div(id="time-btw-checkpoints-main-div"),
+                    html.Div(id="btw-time-checkpoints-main-div"),
                     
                     # More and Less button
                     generate_more_less_button(
-                        more_btn_id="more-time-btw-checkpoints-div-btn",
-                        less_btn_id="less-time-btw-checkpoints-div-btn"
+                        more_btn_id="more-btw-time-checkpoints-div-btn",
+                        less_btn_id="less-btw-time-checkpoints-div-btn"
                     )
                 ], style={"display": "inline-block",
                           "width": "29%",
