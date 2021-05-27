@@ -52,18 +52,21 @@ def generate_possible_values_checklist(label, id, days, column):
         )
     ], style=marginBottom)
     
-def generate_appointment_checklist():
+def generate_appointment_checklist(label):
     """
     Generate appointment selection using Checklist from Dash Core Components.
     """
     
-    return dcc.Checklist(
-        id="appointment-checklist",
-        options=[{"label": "นัดหมาย", "value": 1},
-                 {"label": "walk-in", "value": 0}],
-        value=[1, 0],
-        labelStyle=checklist_labelStyle
-    )
+    return html.Div([
+        html.Label(children=label),
+        dcc.Checklist(
+            id="appointment-checklist",
+            options=[{"label": "นัดหมาย", "value": 1},
+                    {"label": "walk-in", "value": 0}],
+            value=[1, 0],
+            labelStyle=checklist_labelStyle
+        )
+    ], style=marginBottom)
     
 def generate_two_inputs_components(label, min_id, max_id, min=None, max=None):
     """

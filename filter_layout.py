@@ -11,7 +11,8 @@ def filter_layout(days):
     
     return html.Div([
         # Date picker range division
-        generate_date_picker_range("Date:", days),
+        generate_date_picker_range(label="Date:",
+                                   days=days),
         
         # Filter fields division
         html.Div([
@@ -34,10 +35,7 @@ def filter_layout(days):
                 ),
                 
                 # Appointment checklist division
-                html.Div([
-                    html.Label(children="Appointment:"),
-                    generate_appointment_checklist()
-                ], style=marginBottom),
+                generate_appointment_checklist(label="Appointment:"),
                 
                 # Age division
                 generate_two_inputs_components(
@@ -70,7 +68,7 @@ def filter_layout(days):
             # Second division
             html.Div([
                 # Clinic checklist division
-                generate_clinics_checklist("Clinics:")
+                generate_clinics_checklist(label="Clinics:")
             ], style={"display": "inline-block",
                       "width": "79%",
                       "verticalAlign": "top",})
@@ -84,6 +82,6 @@ def filter_layout(days):
             generate_total_visitors_label(),
             
             # Data table
-            generate_data_table(days)
+            generate_data_table(days=days)
         ])
     ])
