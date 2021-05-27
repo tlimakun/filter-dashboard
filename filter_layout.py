@@ -13,7 +13,7 @@ def filter_layout(days):
         # Date picker range division
         html.Div([
             html.Label(
-                children="Date : ",
+                children="Date:",
                 style={"display": "inline-block",
                        "marginRight": 10}),
             generate_date_picker_range(days)
@@ -25,25 +25,25 @@ def filter_layout(days):
             html.Div([
                 # Gender checklist division
                 html.Div([
-                    html.Label(children="Gender : "),
+                    html.Label(children="Gender:"),
                     generate_gender_checklist(days)
                 ], style=marginBottom),
                 
                 # Final status checklist division
                 html.Div([
-                    html.Label(children="Final Status : "),
+                    html.Label(children="Final Status:"),
                     generate_final_status_checklist(days)
                 ], style=marginBottom),
                 
                 # Appointment checklist division
                 html.Div([
-                    html.Label(children="Appointment : "),
+                    html.Label(children="Appointment:"),
                     generate_appointment_checklist()
                 ], style=marginBottom),
                 
                 # Age division
                 html.Div([
-                    html.Label(children="Age : "),
+                    html.Label(children="Age:"),
                     generate_two_inputs_components(
                         min_id="min-age-input",
                         max_id="max-age-input"
@@ -52,7 +52,7 @@ def filter_layout(days):
                 
                 # ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ division
                 html.Div([
-                    html.Label(children="ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ (hrs) : "),
+                    html.Label(children="ช่วงเวลาที่ visitors เริ่มเข้าสู่ระบบ (hrs):"),
                     generate_two_inputs_components(
                         min_id="min-start-time-input",
                         max_id="max-start-time-input",
@@ -63,7 +63,7 @@ def filter_layout(days):
                 
                 # ระยะเวลาที่ visitors ใช้ทั้งระบบ
                 html.Div([
-                    html.Label(children="ระยะเวลาที่ visitors ใช้ทั้งระบบ (hrs) : "),
+                    html.Label(children="ระยะเวลาที่ visitors ใช้ทั้งระบบ (hrs):"),
                     generate_two_inputs_components(
                         min_id="min-total-time-input",
                         max_id="max-total-time-input",
@@ -72,17 +72,17 @@ def filter_layout(days):
                     )
                 ])
             ], style={"display": "inline-block",
-                      "width": "20%"}),
+                      "width": "22%"}),
             
             # Second division
             html.Div([
                 # Clinic checklist division
                 html.Div([
-                    html.Label(children="Clinic : "),
+                    html.Label(children="Clinic:"),
                     generate_clinics_checklist()
                 ])
             ], style={"display": "inline-block",
-                      "width": "80%",
+                      "width": "78%",
                       "verticalAlign": "top",})
         ], style={"borderTop": "thin lightgrey solid",
                   "borderBottom": "thin lightgrey solid",

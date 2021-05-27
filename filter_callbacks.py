@@ -127,4 +127,4 @@ def callback_data_table(app, days):
         for col in [col for col in filtered.columns if col.endswith("_dt")]:
             filtered[col] = filtered[col].dt.strftime("%d-%m-%Y%n%H:%M:%S")
         
-        return f"Total filtered visitors : {len(filtered)}", filtered.to_dict("records")
+        return f"Total filtered visitors: {len(filtered)}", filtered.to_dict("records")
