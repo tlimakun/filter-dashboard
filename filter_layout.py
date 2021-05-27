@@ -11,13 +11,7 @@ def filter_layout(days):
     
     return html.Div([
         # Date picker range division
-        html.Div([
-            html.Label(
-                children="Date:",
-                style={"display": "inline-block",
-                       "marginRight": 10}),
-            generate_date_picker_range(days)
-        ], style={"marginBottom": 5}),
+        generate_date_picker_range("Date:", days),
         
         # Filter fields division
         html.Div([
