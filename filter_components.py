@@ -3,8 +3,12 @@ import dash_core_components as dcc
 import dash_table as table
 from datetime import timedelta
 
-checklist_labelStyle={"marginRight": 8,
-                      "display": "inline-block"}
+
+# Checklist and RadioItems labelStyle
+checklist_labelStyle = {"marginRight": 8,
+                        "display": "inline-block"}
+
+marginBottom = {"marginBottom": 10}
 
 def generate_date_picker_range(days):
     """
@@ -74,7 +78,7 @@ def generate_two_inputs_components(min_id, max_id, min=None, max=None):
     Generate html component that receive two inputs using Input from Dash Core Components.
     """
     input_style={"display": "inline-block",
-                 "width": "20%"}
+                 "width": "25%"}
     
     return html.Div([
         dcc.Input(
@@ -106,6 +110,25 @@ def generate_clinics_checklist():
     return dcc.Checklist(
         id="clinics-checklist"
     )
+    
+def generate_require_datetime_radioItems(label, id):
+    """
+    Generate require data in datetime columns or not selection using RadioItems from Dash Core Components.
+    """
+    
+    return html.Div([
+        html.Label(children=label + ':'),
+        dcc.RadioItems(
+            id=id,
+            options=[
+                {"label": "มี / ไม่มี", "value": 2},
+                {"label": "มี", "value": 1},
+                {"label": "ไม่มี", "value": 0}
+            ],
+            value=2,
+            labelStyle=checklist_labelStyle
+        )
+    ], style=marginBottom)
     
 def generate_total_visitors_label():
     """
