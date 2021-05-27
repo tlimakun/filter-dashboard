@@ -171,7 +171,7 @@ def generate_require_datetime_radioItems(label, id):
         )
     ], style=marginBottom)
     
-def generate_checkpoints_ordering_dropdown(label):
+def generate_checkpoints_ordering_division(label):
     return html.Div([
         html.Label(children=label + ':'),
         dcc.Dropdown(

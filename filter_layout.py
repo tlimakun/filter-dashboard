@@ -73,7 +73,7 @@ def filter_layout(days):
             html.Div([
                 # 2-1 sub division
                 html.Div([
-                    generate_checkpoints_ordering_dropdown(label="ลำดับของ checkpoints")
+                    generate_checkpoints_ordering_division(label="ลำดับของ checkpoints")
                 ]),
                 
                 # 2-2 sub division
