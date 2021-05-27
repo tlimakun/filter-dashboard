@@ -18,7 +18,7 @@ def generate_date_picker_range(label, days):
     dates = list(days.keys())
     
     return html.Div([
-        html.Label(children=label,
+        html.Label(children=label + ':',
                    style={"display": "inline-block",
                           "marginRight": 10}),
         dcc.DatePickerRange(
@@ -43,7 +43,7 @@ def generate_possible_values_checklist(label, id, days, column):
         values = values.union(day[column].unique())
     
     return html.Div([
-        html.Label(children=label),
+        html.Label(children=label + ':'),
         dcc.Checklist(
             id=id,
             options=[{"label": value, "value": value} for value in values],
@@ -58,7 +58,7 @@ def generate_appointment_checklist(label):
     """
     
     return html.Div([
-        html.Label(children=label),
+        html.Label(children=label + ':'),
         dcc.Checklist(
             id="appointment-checklist",
             options=[{"label": "นัดหมาย", "value": 1},
@@ -76,7 +76,7 @@ def generate_two_inputs_components(label, min_id, max_id, min=None, max=None):
                  "width": "25%"}
     
     return html.Div([
-        html.Label(children=label),
+        html.Label(children=label + ':'),
         html.Div([
             dcc.Input(
                 id=min_id,
@@ -106,7 +106,7 @@ def generate_clinics_checklist(label):
     """
     
     return html.Div([
-        html.Label(children=label),
+        html.Label(children=label + ':'),
         dcc.Checklist(
             id="clinics-checklist"
         )
