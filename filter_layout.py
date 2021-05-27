@@ -73,13 +73,18 @@ def filter_layout(days):
             html.Div([
                 # 2-1 sub division
                 html.Div([
+                    generate_checkpoints_ordering_dropdown(label="ลำดับของ checkpoints")
+                ]),
+                
+                # 2-2 sub division
+                html.Div([
                     # Clinic checklist
                     generate_clinics_checklist(label="Clinics")
                 ], style={"display": "inline-block",
                           "width": "30%",
                           "marginRight": "1%"}),
                 
-                # 2-2 sub division
+                # 2-3 sub division
                 html.Div([
                     # First datetime column radioItems division
                     html.Div([
