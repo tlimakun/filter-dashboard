@@ -18,16 +18,20 @@ def filter_layout(days):
             # First division
             html.Div([
                 # Gender checklist division
-                html.Div([
-                    html.Label(children="Gender:"),
-                    generate_gender_checklist(days)
-                ], style=marginBottom),
+                generate_possible_values_checklist(
+                    label="Gender:",
+                    id="gender-checklist",
+                    days=days,
+                    column="gender"
+                ),
                 
                 # Final status checklist division
-                html.Div([
-                    html.Label(children="Final Status:"),
-                    generate_final_status_checklist(days)
-                ], style=marginBottom),
+                generate_possible_values_checklist(
+                    label="Final Status:",
+                    id="final-status-checklist",
+                    days=days,
+                    column="final_status"
+                ),
                 
                 # Appointment checklist division
                 html.Div([
