@@ -172,6 +172,10 @@ def generate_require_datetime_radioItems(label, id):
     ], style=marginBottom)
     
 def generate_checkpoints_ordering_division(label):
+    """
+    Generate checkpoints ordering division using Dropdown and RadioItems from Dash Core Components.
+    """
+    
     return html.Div([
         html.Div([
             html.Label(children=label + ':'),
@@ -193,3 +197,30 @@ def generate_checkpoints_ordering_division(label):
                   "width": "14%",
                   "verticalAlign": "top"})
     ], style=marginBottom)
+    
+def generate_more_less_button(more_btn_id, less_btn_id):
+    """
+    Generate more and less button.
+    """
+    
+    return html.Div([
+        html.Button(
+            children="MORE",
+            id=more_btn_id,
+            style={
+                "width": "20%",
+                "textAlign": "center",
+                "padding": 0,
+                "marginRight": "1%"
+            }
+        ),
+        html.Button(
+            children="LESS",
+            id=less_btn_id,
+            style={
+                "width": "20%",
+                "textAlign": "center",
+                "padding": 0
+            }
+        )
+    ], style={"textAlign": "center"})

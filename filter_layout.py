@@ -81,7 +81,7 @@ def filter_layout(days):
                     # Clinic checklist
                     generate_clinics_checklist(label="Clinics")
                 ], style={"display": "inline-block",
-                          "width": "30%",
+                          "width": "29%",
                           "marginRight": "1%"}),
                 
                 # 2-3 sub division
@@ -154,7 +154,17 @@ def filter_layout(days):
                 ], style={"display": "inline-block",
                           "width": "40%",
                           "verticalAlign": "top",
-                          "marginRight": "1%"})
+                          "marginRight": "1%"}),
+                
+                # 2-4 sub division
+                html.Div([
+                    generate_more_less_button(
+                        more_btn_id="more-time-btw-div-btn",
+                        less_btn_id="less-time-btw-div-btn"
+                    )
+                ], style={"display": "inline-block",
+                          "width": "29%",
+                          "verticalAlign": "top"})
             ], style={"display": "inline-block",
                       "width": "77%",
                       "verticalAlign": "top",})
