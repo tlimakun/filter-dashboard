@@ -234,8 +234,9 @@ def generate_time_between_label(label):
     
     return html.Label(children=label)
     
-def generate_time_between_checkpoints_division(start_checkpoint_id, end_checkpoint_id, min_id, max_id,
-                                               min=None, max=None):
+def generate_time_between_checkpoints_division(start_checkpoint_id, end_checkpoint_id,
+                                               start_checkpoint_options, end_checkpoint_options,
+                                               min_id, max_id, min=None, max=None):
     """
     Generate time between checkpoints division using Input and Dropdown from Dash Core Components.
     """
@@ -243,7 +244,10 @@ def generate_time_between_checkpoints_division(start_checkpoint_id, end_checkpoi
     return html.Div([
         html.Div([
             html.Div([
-                dcc.Dropdown(id=start_checkpoint_id)
+                dcc.Dropdown(
+                    id=start_checkpoint_id,
+                    options=start_checkpoint_options
+                )
             ], style={"display": "inline-block",
                       "width": "45%",
                       "verticalAlign": "middle"}),
@@ -254,7 +258,10 @@ def generate_time_between_checkpoints_division(start_checkpoint_id, end_checkpoi
                               "verticalAlign": "middle"}
             ),
             html.Div([
-                dcc.Dropdown(id=end_checkpoint_id)
+                dcc.Dropdown(
+                    id=end_checkpoint_id,
+                    options=end_checkpoint_options
+                )
             ], style={"display": "inline-block",
                       "width": "45%",
                       "verticalAlign": "middle"})
