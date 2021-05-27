@@ -225,7 +225,8 @@ def generate_more_less_button(more_btn_id, less_btn_id):
                 "padding": 0
             }
         )
-    ], style={"textAlign": "center"})
+    ], style={"textAlign": "center",
+              "marginBottom": 10})
     
 def generate_time_between_label(label):
     """
