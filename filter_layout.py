@@ -72,7 +72,8 @@ def filter_layout(days):
                     )
                 ])
             ], style={"display": "inline-block",
-                      "width": "22%"}),
+                      "width": "20%",
+                      "marginRight": "1%"}),
             
             # Second division
             html.Div([
@@ -82,7 +83,7 @@ def filter_layout(days):
                     generate_clinics_checklist()
                 ])
             ], style={"display": "inline-block",
-                      "width": "78%",
+                      "width": "79%",
                       "verticalAlign": "top",})
         ], style={"borderTop": "thin lightgrey solid",
                   "borderBottom": "thin lightgrey solid",
