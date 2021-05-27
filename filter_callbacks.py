@@ -58,13 +58,15 @@ def callback_data_table(app, days):
         Input("doc-submit-column-radioItems", "value"),
         Input("nurse-column-radioItems", "value"),
         Input("payment-column-radioItems", "value"),
-        Input("pharmacy-column-radioItems", "value")
+        Input("pharmacy-column-radioItems", "value"),
+        Input("checkpoints-ordering-dropdown", "value"),
+        Input("checkpoints-ordering-radioItems", "value")
     )
     def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
                           min_start_time, max_start_time, min_total_time, max_total_time, clinics,
                           kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt):
-        # Filter data between given start date and end date.
+                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered):
+        # Filter data between given start date and end date
         filtered = filter_data_by_date(days, start_date, end_date)
         
         # Filter appointment
@@ -102,7 +104,37 @@ def callback_data_table(app, days):
         # Drop unused columns
         filtered.drop(["start_time", "end_time", "total_time"], axis=1)
         
-        # Change format in datetime columns.
+        # Filter visitors that have same checkpoint order with desired checkpoint ordering
+        def order_checkpoints(columns, checkpoints):
+            sequence = []
+            for index in range(len(columns)):
+                if not pd.isnull(columns[index]):
+                    sequence.append((checkpoints[index], columns[index]))
+            
+            sequence = sorted(sequence, key=(lambda x: x[1]))
+            sequence = list(map(lambda x: x[0], sequence))
+            
+            sequence_index = []
+            for checkpoint in checkpoints:
+                if checkpoint in sequence:
+                    sequence_index.append(sequence.index(checkpoint))
+            
+            if sorted(sequence_index) == sequence_index:
+                return True
+            else:
+                return False
+            
+        if checkpoints is not None:
+            filtered["sequence"] = filtered[checkpoints].apply(lambda columns: order_checkpoints(columns, checkpoints), axis=1)
+            if isOrdered == 1:
+                filtered = filtered[filtered["sequence"]]
+            else:
+                filtered = filtered[~filtered["sequence"]]
+            
+            # Drop unused columns
+            filtered.drop(["sequence"], axis=1)
+        
+        # Change format in datetime columns
         for col in [col for col in filtered.columns if col.endswith("_dt")]:
             filtered[col] = filtered[col].dt.strftime("%d-%m-%Y%n%H:%M:%S")
         
