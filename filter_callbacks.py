@@ -1,7 +1,11 @@
 from dash.dependencies import Input, Output
+import dash
 import pandas as pd
 import numpy as np
 from datetime import date
+from filter_components import generate_time_between_checkpoints_division
+
+time_btw_checkpoints_count = 1
 
 def filter_data_by_date(days, start_date, end_date):
     """
@@ -237,3 +241,59 @@ def callback_checkpoints_ordering_radioItems(app, days):
                        {"label": "ไม่ใช่", "value": 0}]
         
         return options, 1
+    
+def callback_time_between_checkpoints_main_division(app, days):
+    """
+    Update time between checkpoints main division.
+    """
+    
+    @app.callback(
+        Output("time-btw-checkpoints-main-div", "children"),
+        Input("kios-g-column-radioItems", "value"),
+        Input("kios-column-radioItems", "value"),
+        Input("screen-column-radioItems", "value"),
+        Input("send-doc-column-radioItems", "value"),
+        Input("doc-call-column-radioItems", "value"),
+        Input("doc-begin-column-radioItems", "value"),
+        Input("doc-submit-column-radioItems", "value"),
+        Input("nurse-column-radioItems", "value"),
+        Input("payment-column-radioItems", "value"),
+        Input("pharmacy-column-radioItems", "value"),
+        Input("more-time-btw-checkpoints-div-btn", "n_clicks"),
+        Input("less-time-btw-checkpoints-div-btn", "n_clicks")
+    )
+    def update_time_between_checkpoints_main_division(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                      doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, more_btn, less_btn):
+        global time_btw_checkpoints_count
+        checkpoints = []
+        ctx = dash.callback_context
+        
+        if not ctx.triggered:
+            button_id = None
+        else:
+            button_id = ctx.triggered[0]["prop_id"].split('.')[0]
+            
+        for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
+            if value == 1 or value == 2:
+                checkpoints.append({"label": col, "value": col})
+        
+        if button_id == "more-time-btw-checkpoints-div-btn":
+            time_btw_checkpoints_count += 1
+        elif button_id == "less-time-btw-checkpoints-div-btn":
+            if time_btw_checkpoints_count > 0:
+                time_btw_checkpoints_count -= 1
+                
+        print(time_btw_checkpoints_count)
+        addition = [generate_time_between_checkpoints_division(
+            start_checkpoint_id="start-checkpoint-dropdown" + str(n),
+            end_checkpoint_id="end-checkpoint-dropdown" + str(n),
+            start_checkpoint_options=checkpoints,
+            end_checkpoint_options=checkpoints,
+            min_id="min-time-btw-input" + str(n),
+            max_id="max-time-btw-input" + str(n),
+            min=0,
+            max=24
+        ) for n in range(time_btw_checkpoints_count)]
+                
+        return addition
