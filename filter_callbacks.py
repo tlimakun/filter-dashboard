@@ -37,6 +37,7 @@ def callback_data_table(app, days):
     """
     Update data in "data-table" table and number of visitors in "total-visitors-label" label.
     """
+    global time_btw_checkpoints_count
     
     @app.callback(
         Output("total-visitors-label", "children"),
@@ -64,14 +65,21 @@ def callback_data_table(app, days):
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
         Input("checkpoints-ordering-dropdown", "value"),
-        Input("checkpoints-ordering-radioItems", "value")
+        Input("checkpoints-ordering-radioItems", "value"),
+        [Input("start-checkpoint-dropdown" + str(n), "value") for n in range(time_btw_checkpoints_count)],
+        [Input("end-checkpoint-dropdown" + str(n), "value") for n in range(time_btw_checkpoints_count)],
+        [Input("min-btw-time-input" + str(n), "value") for n in range(time_btw_checkpoints_count)],
+        [Input("max-btw-time-input" + str(n), "value") for n in range(time_btw_checkpoints_count)],
     )
     def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
                           min_start_time, max_start_time, min_total_time, max_total_time, clinics,
                           kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered):
+                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered,
+                          start_checkpoints, end_checkpoints, min_btw_time, max_btw_time):
         # Filter data between given start date and end date
         filtered = filter_data_by_date(days, start_date, end_date)
+        
+        print(start_checkpoints, end_checkpoints)
         
         # Filter appointment
         if len(appointment) == 1:
@@ -248,7 +256,7 @@ def callback_time_between_checkpoints_main_division(app, days):
     """
     
     @app.callback(
-        Output("time-btw-checkpoints-main-div", "children"),
+        Output("btw-time-checkpoints-main-div", "children"),
         Input("kios-g-column-radioItems", "value"),
         Input("kios-column-radioItems", "value"),
         Input("screen-column-radioItems", "value"),
@@ -259,8 +267,8 @@ def callback_time_between_checkpoints_main_division(app, days):
         Input("nurse-column-radioItems", "value"),
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
-        Input("more-time-btw-checkpoints-div-btn", "n_clicks"),
-        Input("less-time-btw-checkpoints-div-btn", "n_clicks")
+        Input("more-btw-time-checkpoints-div-btn", "n_clicks"),
+        Input("less-btw-time-checkpoints-div-btn", "n_clicks")
     )
     def update_time_between_checkpoints_main_division(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                                       doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, more_btn, less_btn):
@@ -278,20 +286,19 @@ def callback_time_between_checkpoints_main_division(app, days):
             if value == 1 or value == 2:
                 checkpoints.append({"label": col, "value": col})
         
-        if button_id == "more-time-btw-checkpoints-div-btn":
+        if button_id == "more-btw-time-checkpoints-div-btn":
             time_btw_checkpoints_count += 1
-        elif button_id == "less-time-btw-checkpoints-div-btn":
-            if time_btw_checkpoints_count > 0:
+        elif button_id == "less-btw-time-checkpoints-div-btn":
+            if time_btw_checkpoints_count > 1:
                 time_btw_checkpoints_count -= 1
-                
-        print(time_btw_checkpoints_count)
+
         addition = [generate_time_between_checkpoints_division(
             start_checkpoint_id="start-checkpoint-dropdown" + str(n),
             end_checkpoint_id="end-checkpoint-dropdown" + str(n),
             start_checkpoint_options=checkpoints,
             end_checkpoint_options=checkpoints,
-            min_id="min-time-btw-input" + str(n),
-            max_id="max-time-btw-input" + str(n),
+            min_id="min-btw-time-input" + str(n),
+            max_id="max-btw-time-input" + str(n),
             min=0,
             max=24
         ) for n in range(time_btw_checkpoints_count)]
