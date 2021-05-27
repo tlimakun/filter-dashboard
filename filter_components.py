@@ -173,9 +173,18 @@ def generate_require_datetime_radioItems(label, id):
     
 def generate_checkpoints_ordering_division(label):
     return html.Div([
-        html.Label(children=label + ':'),
-        dcc.Dropdown(
-            id="checkpoint-ordering-dropdown",
-            multi=True
-        )
+        html.Div([
+            html.Label(children=label + ':'),
+            dcc.Dropdown(
+                id="checkpoints-ordering-dropdown",
+                multi=True
+            )
+        ]),
+        html.Div([
+            html.Label("เรียงตามลำดับหรือไม่:"),
+            dcc.RadioItems(
+                id="checkpoints-ordering-radioItems",
+                labelStyle=checklist_labelStyle
+            )
+        ])
     ], style=marginBottom)
