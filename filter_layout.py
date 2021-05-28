@@ -161,13 +161,11 @@ def filter_layout(days):
                     generate_time_between_label(label="ระยะเวลาที่ visitors ใช้ระหว่าง 2 checkpoints (hrs):"),
                     
                     # Time between checkpoints main division
-                    html.Div(id="btw-time-checkpoints-main-div"),
+                    html.Div(id="btw-time-checkpoints-main-div",
+                             children=[]),
                     
                     # More and Less button
-                    generate_more_less_button(
-                        more_btn_id="more-btw-time-checkpoints-div-btn",
-                        less_btn_id="less-btw-time-checkpoints-div-btn"
-                    )
+                    generate_more_button(id="more-btw-time-checkpoints-div-btn")
                 ], style={"display": "inline-block",
                           "width": "29%",
                           "verticalAlign": "top"})
