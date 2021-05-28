@@ -200,7 +200,7 @@ def generate_checkpoints_ordering_division(label):
                   "verticalAlign": "top"})
     ], style=marginBottom)
     
-def generate_more_less_button(more_btn_id, less_btn_id):
+def generate_more_button(id):
     """
     Generate more and less button using Buttom from Dash Html Components.
     """
@@ -208,24 +208,15 @@ def generate_more_less_button(more_btn_id, less_btn_id):
     return html.Div([
         html.Button(
             children="MORE",
-            id=more_btn_id,
+            id=id,
             style={
                 "width": "20%",
                 "textAlign": "center",
                 "padding": 0,
                 "marginRight": "2%"
             }
-        ),
-        html.Button(
-            children="LESS",
-            id=less_btn_id,
-            style={
-                "width": "20%",
-                "textAlign": "center",
-                "padding": 0
-            }
         )
-    ], style={"textAlign": "center",
+    ], style={"textAlign": "right",
               "marginBottom": 10})
     
 def generate_time_between_label(label):
