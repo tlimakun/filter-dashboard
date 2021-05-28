@@ -1,4 +1,4 @@
-from dash.dependencies import Input, Output, State, MATCH, ALLSMALLER
+from dash.dependencies import Input, Output, State, MATCH, ALL, ALLSMALLER
 import dash
 import pandas as pd
 import numpy as np
@@ -62,12 +62,17 @@ def callback_data_table(app, days):
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
         Input("checkpoints-ordering-dropdown", "value"),
-        Input("checkpoints-ordering-radioItems", "value")
+        Input("checkpoints-ordering-radioItems", "value"),
+        Input({"type": "start-checkpoint-dropdown", "index": ALL}, "value"),
+        Input({"type": "end-checkpoint-dropdown", "index": ALL}, "value"),
+        Input({"type": "min-btw-time-input", "index": ALL}, "value"),
+        Input({"type": "max-btw-time-input", "index": ALL}, "value")
     )
     def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
                           min_start_time, max_start_time, min_total_time, max_total_time, clinics,
                           kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered):
+                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered,
+                          start_checkpoints, end_checkpoints, min_btw, max_btw):
         # Filter data between given start date and end date
         filtered = filter_data_by_date(days, start_date, end_date)
         
@@ -105,6 +110,25 @@ def callback_data_table(app, days):
         
         # Drop unused columns
         filtered.drop(["start_time", "end_time", "total_time"], axis=1)
+        
+        # Filter visitors with time between two checkpoints is between min_btw and max_btw
+        def generate_time_btw(columns):
+            if pd.isnull(columns[0]) or pd.isnull(columns[1]):
+                return np.nan
+            
+            return abs((columns[0] - columns[1]) / np.timedelta64(1, 'h'))
+        
+        for index in range(max(len(start_checkpoints), len(end_checkpoints))):
+            if start_checkpoints[index] == None or end_checkpoints[index] == None:
+                continue
+            
+            filtered["time_btw"] = filtered[[start_checkpoints[index], end_checkpoints[index]]].apply(lambda columns: generate_time_btw(columns),
+                                                                                                      axis=1)
+            filtered = filtered[(filtered["time_btw"] >= min_btw[index]) &
+                                (filtered["time_btw"] < max_btw[index]) |
+                                (filtered["time_btw"].isna())]
+            
+            filtered.drop(["time_btw"], axis=1)
         
         # Filter visitors that have same checkpoint order with desired checkpoint ordering
         def order_checkpoints(columns, checkpoints):
@@ -274,7 +298,7 @@ def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, do
         
     for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
-        if value == 1 or value == 2:
+        if value == 1:
             checkpoints.append({"label": col, "value": col})
     
     if checkpoint != None:
