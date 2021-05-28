@@ -373,7 +373,7 @@ def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, do
     
 def callback_time_between_checkpoints_start_dropdown(app, days):
     """
-    Update time between checkpoints startdropdown.
+    Update time between checkpoints start dropdown.
     """
     
     @app.callback(
@@ -396,7 +396,6 @@ def callback_time_between_checkpoints_start_dropdown(app, days):
     def update_time_between_checkpoints_start_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                                        doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
                                                        all_start_checkpoints, all_end_checkpoints, end_checkpoint, id):
-        print(all_start_checkpoints, all_end_checkpoints)
         return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                              doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
                                              all_start_checkpoints, all_end_checkpoints, end_checkpoint, id)
@@ -429,3 +428,64 @@ def callback_time_between_checkpoints_end_dropdown(app, days):
         return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                              doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
                                              all_start_checkpoints, all_end_checkpoints, start_checkpoint, id)
+        
+def change_checkpoint_dropdown_values(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                      doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint):
+    """
+    Change checkpoint dropdown value to None if that datetime column radioItem changed to 2 or 0.
+    """
+      
+    for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                            doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
+        if value == 0 and col == checkpoint:
+            return None
+        else:
+            return checkpoint
+        
+def callback_time_between_checkpoints_start_dropdown_values(app, days):
+    """
+    Update time between checkpoints start dropdown values.
+    """
+    
+    @app.callback(
+        Output({"type": "start-checkpoint-dropdown", "index": MATCH}, "value"),
+        Input("kios-g-column-radioItems", "value"),
+        Input("kios-column-radioItems", "value"),
+        Input("screen-column-radioItems", "value"),
+        Input("send-doc-column-radioItems", "value"),
+        Input("doc-call-column-radioItems", "value"),
+        Input("doc-begin-column-radioItems", "value"),
+        Input("doc-submit-column-radioItems", "value"),
+        Input("nurse-column-radioItems", "value"),
+        Input("payment-column-radioItems", "value"),
+        Input("pharmacy-column-radioItems", "value"),
+        State({"type": "start-checkpoint-dropdown", "index": MATCH}, "value")
+    )
+    def update_time_between_checkpoints_start_dropdown_values(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                              doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint):
+        return change_checkpoint_dropdown_values(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                 doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint)
+        
+def callback_time_between_checkpoints_start_dropdown_values(app, days):
+    """
+    Update time between checkpoints end dropdown values.
+    """
+    
+    @app.callback(
+        Output({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
+        Input("kios-g-column-radioItems", "value"),
+        Input("kios-column-radioItems", "value"),
+        Input("screen-column-radioItems", "value"),
+        Input("send-doc-column-radioItems", "value"),
+        Input("doc-call-column-radioItems", "value"),
+        Input("doc-begin-column-radioItems", "value"),
+        Input("doc-submit-column-radioItems", "value"),
+        Input("nurse-column-radioItems", "value"),
+        Input("payment-column-radioItems", "value"),
+        Input("pharmacy-column-radioItems", "value"),
+        State({"type": "end-checkpoint-dropdown", "index": MATCH}, "value")
+    )
+    def update_time_between_checkpoints_start_dropdown_values(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                              doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint):
+        return change_checkpoint_dropdown_values(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                 doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint)
