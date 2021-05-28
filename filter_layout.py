@@ -3,7 +3,7 @@ from filter_components import *
 
 datetime_style = {"display": "inline-block",
                   "width": "50%",
-                  "vecticalAlign": "top"}
+                  "verticalAlign": "bottom"}
 
 def filter_layout(days):
     """
@@ -87,6 +87,12 @@ def filter_layout(days):
                 html.Div([
                     # First datetime column radioItems division
                     html.Div([
+                        # All datetime column radioItems
+                        generate_require_datetime_radioItems(
+                            label="All Datetime Columns:",
+                            id="all-datetime-columns"
+                        ),
+                        
                         # KIOS G floor datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="KIOS-G Datetime:",
