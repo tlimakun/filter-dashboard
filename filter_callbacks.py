@@ -264,6 +264,53 @@ def callback_checkpoints_ordering_radioItems(app, days):
         
         return options, 1
     
+def callback_all_datetime_columns_radioItems(app, days):
+    """
+    Update all datetime columns radioItems by "all-datetime-columns" radioItems.
+    """
+    
+    @app.callback(
+        Output("kios-g-column-radioItems", "options"),
+        Output("kios-column-radioItems", "options"),
+        Output("screen-column-radioItems", "options"),
+        Output("send-doc-column-radioItems", "options"),
+        Output("doc-call-column-radioItems", "options"),
+        Output("doc-begin-column-radioItems", "options"),
+        Output("doc-submit-column-radioItems", "options"),
+        Output("nurse-column-radioItems", "options"),
+        Output("payment-column-radioItems", "options"),
+        Output("pharmacy-column-radioItems", "options"),
+        Output("kios-g-column-radioItems", "value"),
+        Output("kios-column-radioItems", "value"),
+        Output("screen-column-radioItems", "value"),
+        Output("send-doc-column-radioItems", "value"),
+        Output("doc-call-column-radioItems", "value"),
+        Output("doc-begin-column-radioItems", "value"),
+        Output("doc-submit-column-radioItems", "value"),
+        Output("nurse-column-radioItems", "value"),
+        Output("payment-column-radioItems", "value"),
+        Output("pharmacy-column-radioItems", "value"),
+        Input("all-datetime-columns", "value")
+    )
+    def update_all_datetime_columns_radioItems(all_datetime):
+        if all_datetime == 2:
+            options = [
+                {"label": "มี / ไม่มี", "value": 2},
+                {"label": "มี", "value": 1},
+                {"label": "ไม่มี", "value": 0}
+            ]
+        else:
+            options = [
+                {"label": "มี / ไม่มี", "value": 2, "disabled": True},
+                {"label": "มี", "value": 1, "disabled": True},
+                {"label": "ไม่มี", "value": 0, "disabled": True}
+            ]
+            
+        return (options, options, options, options, options,
+                options, options, options, options, options,
+                all_datetime, all_datetime, all_datetime, all_datetime, all_datetime,
+                all_datetime, all_datetime, all_datetime, all_datetime, all_datetime)
+    
 def callback_time_between_checkpoints_main_division(app, days):
     """
     Update time between checkpoints main division.
@@ -303,16 +350,16 @@ def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, do
             checkpoints.append({"label": col, "value": col})
     
     if checkpoint != None:
-            checkpoints.remove({"label": checkpoint, "value": checkpoint})
+        checkpoints.remove({"label": checkpoint, "value": checkpoint})
             
-    for index, value in enumerate(first_checkpoints):
-        if index == id["index"]:
-            continue
-        
-        if first_checkpoints[index] == checkpoint:
-            checkpoints.remove({"label": second_checkpoints[index], "value": second_checkpoints[index]})
-        elif second_checkpoints[index] == checkpoint:
-            checkpoints.remove({"label": first_checkpoints[index], "value": first_checkpoints[index]})
+        for index, value in enumerate(first_checkpoints):
+            if index == id["index"]:
+                continue
+            
+            if first_checkpoints[index] == checkpoint:
+                checkpoints.remove({"label": second_checkpoints[index], "value": second_checkpoints[index]})
+            elif second_checkpoints[index] == checkpoint:
+                checkpoints.remove({"label": first_checkpoints[index], "value": first_checkpoints[index]})
             
     return checkpoints
     
@@ -341,6 +388,7 @@ def callback_time_between_checkpoints_start_dropdown(app, days):
     def update_time_between_checkpoints_start_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                                        doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
                                                        all_start_checkpoints, all_end_checkpoints, end_checkpoint, id):
+        print(all_start_checkpoints, all_end_checkpoints)
         return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                              doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
                                              all_start_checkpoints, all_end_checkpoints, end_checkpoint, id)
