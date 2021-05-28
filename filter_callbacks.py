@@ -1,11 +1,9 @@
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash
 import pandas as pd
 import numpy as np
 from datetime import date
 from filter_components import generate_time_between_checkpoints_division
-
-time_btw_checkpoints_count = 1
 
 def filter_data_by_date(days, start_date, end_date):
     """
@@ -37,7 +35,6 @@ def callback_data_table(app, days):
     """
     Update data in "data-table" table and number of visitors in "total-visitors-label" label.
     """
-    global time_btw_checkpoints_count
     
     @app.callback(
         Output("total-visitors-label", "children"),
@@ -65,21 +62,14 @@ def callback_data_table(app, days):
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
         Input("checkpoints-ordering-dropdown", "value"),
-        Input("checkpoints-ordering-radioItems", "value"),
-        [Input("start-checkpoint-dropdown" + str(n), "value") for n in range(time_btw_checkpoints_count)],
-        [Input("end-checkpoint-dropdown" + str(n), "value") for n in range(time_btw_checkpoints_count)],
-        [Input("min-btw-time-input" + str(n), "value") for n in range(time_btw_checkpoints_count)],
-        [Input("max-btw-time-input" + str(n), "value") for n in range(time_btw_checkpoints_count)],
+        Input("checkpoints-ordering-radioItems", "value")
     )
     def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
                           min_start_time, max_start_time, min_total_time, max_total_time, clinics,
                           kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered,
-                          start_checkpoints, end_checkpoints, min_btw_time, max_btw_time):
+                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered):
         # Filter data between given start date and end date
         filtered = filter_data_by_date(days, start_date, end_date)
-        
-        print(start_checkpoints, end_checkpoints)
         
         # Filter appointment
         if len(appointment) == 1:
@@ -268,39 +258,35 @@ def callback_time_between_checkpoints_main_division(app, days):
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
         Input("more-btw-time-checkpoints-div-btn", "n_clicks"),
-        Input("less-btw-time-checkpoints-div-btn", "n_clicks")
+        State("btw-time-checkpoints-main-div", "children")
     )
     def update_time_between_checkpoints_main_division(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                      doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, more_btn, less_btn):
-        global time_btw_checkpoints_count
+                                                      doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, more_btn, main_div):
         checkpoints = []
-        ctx = dash.callback_context
-        
-        if not ctx.triggered:
-            button_id = None
-        else:
-            button_id = ctx.triggered[0]["prop_id"].split('.')[0]
             
         for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                                 doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
             if value == 1 or value == 2:
                 checkpoints.append({"label": col, "value": col})
         
-        if button_id == "more-btw-time-checkpoints-div-btn":
-            time_btw_checkpoints_count += 1
-        elif button_id == "less-btw-time-checkpoints-div-btn":
-            if time_btw_checkpoints_count > 1:
-                time_btw_checkpoints_count -= 1
-
-        addition = [generate_time_between_checkpoints_division(
-            start_checkpoint_id="start-checkpoint-dropdown" + str(n),
-            end_checkpoint_id="end-checkpoint-dropdown" + str(n),
-            start_checkpoint_options=checkpoints,
-            end_checkpoint_options=checkpoints,
-            min_id="min-btw-time-input" + str(n),
-            max_id="max-btw-time-input" + str(n),
-            min=0,
-            max=24
-        ) for n in range(time_btw_checkpoints_count)]
+        more_btn = (more_btn or 0) + 1
+        
+        if more_btn > len(main_div):
+            new_element = generate_time_between_checkpoints_division(
+                start_checkpoint_id={"type": "start-checkpoint-dropdown",
+                                    "index": more_btn},
+                end_checkpoint_id={"type": "end-checkpoint-dropdown",
+                                "index": more_btn},
+                start_checkpoint_options=checkpoints,
+                end_checkpoint_options=checkpoints,
+                min_id={"type": "min-btw-time-input",
+                        "index": more_btn},
+                max_id={"type": "max-btw-time-input",
+                        "index": more_btn},
+                min=0,
+                max=24
+            )
+            
+            main_div.append(new_element)
                 
-        return addition
+        return main_div
