@@ -1,4 +1,4 @@
-from dash.dependencies import Input, Output, State, MATCH, ALL, ALLSMALLER
+from dash.dependencies import Input, Output, State, MATCH, ALL
 import dash
 import pandas as pd
 import numpy as np
@@ -293,7 +293,8 @@ def callback_time_between_checkpoints_main_division(app, days):
         return main_div
     
 def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                  doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint):
+                                  doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
+                                  first_checkpoints, second_checkpoints, checkpoint, id):
     checkpoints = []
         
     for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
@@ -303,6 +304,15 @@ def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, do
     
     if checkpoint != None:
             checkpoints.remove({"label": checkpoint, "value": checkpoint})
+            
+    for index, value in enumerate(first_checkpoints):
+        if index == id["index"]:
+            continue
+        
+        if first_checkpoints[index] == checkpoint:
+            checkpoints.remove({"label": second_checkpoints[index], "value": second_checkpoints[index]})
+        elif second_checkpoints[index] == checkpoint:
+            checkpoints.remove({"label": first_checkpoints[index], "value": first_checkpoints[index]})
             
     return checkpoints
     
@@ -323,12 +333,17 @@ def callback_time_between_checkpoints_start_dropdown(app, days):
         Input("nurse-column-radioItems", "value"),
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
+        Input({"type": "start-checkpoint-dropdown", "index": ALL}, "value"),
+        Input({"type": "end-checkpoint-dropdown", "index": ALL}, "value"),
         Input({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
+        State({"type": "start-checkpoint-dropdown", "index": MATCH}, "id")
     )
     def update_time_between_checkpoints_start_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                       doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, end_checkpoint):
+                                                       doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
+                                                       all_start_checkpoints, all_end_checkpoints, end_checkpoint, id):
         return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, end_checkpoint)
+                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
+                                             all_start_checkpoints, all_end_checkpoints, end_checkpoint, id)
     
 def callback_time_between_checkpoints_end_dropdown(app, days):
     """
@@ -347,9 +362,14 @@ def callback_time_between_checkpoints_end_dropdown(app, days):
         Input("nurse-column-radioItems", "value"),
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
-        Input({"type": "start-checkpoint-dropdown", "index": MATCH}, "value")
+        Input({"type": "start-checkpoint-dropdown", "index": ALL}, "value"),
+        Input({"type": "end-checkpoint-dropdown", "index": ALL}, "value"),
+        Input({"type": "start-checkpoint-dropdown", "index": MATCH}, "value"),
+        State({"type": "start-checkpoint-dropdown", "index": MATCH}, "id")
     )
     def update_time_between_checkpoints_end_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                     doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, start_checkpoint):
+                                                     doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
+                                                     all_start_checkpoints, all_end_checkpoints, start_checkpoint, id):
         return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, start_checkpoint)
+                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
+                                             all_start_checkpoints, all_end_checkpoints, start_checkpoint, id)
