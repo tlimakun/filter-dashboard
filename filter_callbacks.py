@@ -25,6 +25,10 @@ def filter_data_by_date(days, start_date, end_date):
 
 def datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                           doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt):
+    """
+    Generate datetime columns dictionary.
+    """
+    
     datetime_dict = {"kios_g_dt": kios_g_dt, "kios_dt": kios_dt, "screen_dt": screen_dt, "send_doc_dt": send_doc_dt,
                      "doc_call_dt": doc_call_dt, "doc_begin_dt": doc_begin_dt, "doc_submit_dt": doc_submit_dt,
                      "nurse_dt": nurse_dt, "payment_dt": payment_dt, "pharmacy_dt": pharmacy_dt}
@@ -239,7 +243,7 @@ def callback_checkpoints_ordering_dropdown(app, days):
         
         for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                                 doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
-            if value == 1 or value == 2:
+            if value == 1:
                 checkpoints.append({"label": col, "value": col})
                 
         return checkpoints
@@ -342,6 +346,10 @@ def callback_time_between_checkpoints_main_division(app, days):
 def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
                                   doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt,
                                   first_checkpoints, second_checkpoints, checkpoint, id):
+    """
+    Generate checkpoints dropdown options.
+    """
+    
     checkpoints = []
         
     for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
