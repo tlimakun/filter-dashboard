@@ -1,4 +1,4 @@
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, MATCH, ALLSMALLER
 import dash
 import pandas as pd
 import numpy as np
@@ -247,6 +247,48 @@ def callback_time_between_checkpoints_main_division(app, days):
     
     @app.callback(
         Output("btw-time-checkpoints-main-div", "children"),
+        Input("more-btw-time-checkpoints-div-btn", "n_clicks"),
+        State("btw-time-checkpoints-main-div", "children")
+    )
+    def update_time_between_checkpoints_main_division(more_btn, main_div):
+        new_element = generate_time_between_checkpoints_division(
+            start_checkpoint_id={"type": "start-checkpoint-dropdown",
+                                "index": more_btn},
+            end_checkpoint_id={"type": "end-checkpoint-dropdown",
+                            "index": more_btn},
+            min_id={"type": "min-btw-time-input",
+                    "index": more_btn},
+            max_id={"type": "max-btw-time-input",
+                    "index": more_btn},
+            min=0,
+            max=24
+        )
+        
+        main_div.append(new_element)
+                
+        return main_div
+    
+def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                  doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoint):
+    checkpoints = []
+        
+    for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                            doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
+        if value == 1 or value == 2:
+            checkpoints.append({"label": col, "value": col})
+    
+    if checkpoint != None:
+            checkpoints.remove({"label": checkpoint, "value": checkpoint})
+            
+    return checkpoints
+    
+def callback_time_between_checkpoints_start_dropdown(app, days):
+    """
+    Update time between checkpoints startdropdown.
+    """
+    
+    @app.callback(
+        Output({"type": "start-checkpoint-dropdown", "index": MATCH}, "options"),
         Input("kios-g-column-radioItems", "value"),
         Input("kios-column-radioItems", "value"),
         Input("screen-column-radioItems", "value"),
@@ -257,36 +299,33 @@ def callback_time_between_checkpoints_main_division(app, days):
         Input("nurse-column-radioItems", "value"),
         Input("payment-column-radioItems", "value"),
         Input("pharmacy-column-radioItems", "value"),
-        Input("more-btw-time-checkpoints-div-btn", "n_clicks"),
-        State("btw-time-checkpoints-main-div", "children")
+        Input({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
     )
-    def update_time_between_checkpoints_main_division(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                      doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, more_btn, main_div):
-        checkpoints = []
-            
-        for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
-            if value == 1 or value == 2:
-                checkpoints.append({"label": col, "value": col})
-        
-        more_btn = (more_btn or 0) + 1
-        
-        if more_btn > len(main_div):
-            new_element = generate_time_between_checkpoints_division(
-                start_checkpoint_id={"type": "start-checkpoint-dropdown",
-                                    "index": more_btn},
-                end_checkpoint_id={"type": "end-checkpoint-dropdown",
-                                "index": more_btn},
-                start_checkpoint_options=checkpoints,
-                end_checkpoint_options=checkpoints,
-                min_id={"type": "min-btw-time-input",
-                        "index": more_btn},
-                max_id={"type": "max-btw-time-input",
-                        "index": more_btn},
-                min=0,
-                max=24
-            )
-            
-            main_div.append(new_element)
-                
-        return main_div
+    def update_time_between_checkpoints_start_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                       doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, end_checkpoint):
+        return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, end_checkpoint)
+    
+def callback_time_between_checkpoints_end_dropdown(app, days):
+    """
+    Update time between checkpoints end dropdown.
+    """
+    
+    @app.callback(
+        Output({"type": "end-checkpoint-dropdown", "index": MATCH}, "options"),
+        Input("kios-g-column-radioItems", "value"),
+        Input("kios-column-radioItems", "value"),
+        Input("screen-column-radioItems", "value"),
+        Input("send-doc-column-radioItems", "value"),
+        Input("doc-call-column-radioItems", "value"),
+        Input("doc-begin-column-radioItems", "value"),
+        Input("doc-submit-column-radioItems", "value"),
+        Input("nurse-column-radioItems", "value"),
+        Input("payment-column-radioItems", "value"),
+        Input("pharmacy-column-radioItems", "value"),
+        Input({"type": "start-checkpoint-dropdown", "index": MATCH}, "value")
+    )
+    def update_time_between_checkpoints_end_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                                     doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, start_checkpoint):
+        return generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
+                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, start_checkpoint)
