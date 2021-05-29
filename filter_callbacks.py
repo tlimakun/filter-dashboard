@@ -23,16 +23,15 @@ def filter_data_by_date(days, start_date, end_date):
     
     return filtered
 
-def datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt):
+def datetime_columns_dict(datetime_columns_id, datetime_columns):
     """
     Generate datetime columns dictionary.
     """
-    
-    datetime_dict = {"kios_g_dt": kios_g_dt, "kios_dt": kios_dt, "screen_dt": screen_dt, "send_doc_dt": send_doc_dt,
-                     "doc_call_dt": doc_call_dt, "doc_begin_dt": doc_begin_dt, "doc_submit_dt": doc_submit_dt,
-                     "nurse_dt": nurse_dt, "payment_dt": payment_dt, "pharmacy_dt": pharmacy_dt}
-    
+
+    datetime_dict = dict()
+    for index, id in enumerate(datetime_columns_id):
+        datetime_dict[id["index"]] = datetime_columns[index]
+
     return datetime_dict
 
 def callback_data_table(app, days):
@@ -55,28 +54,20 @@ def callback_data_table(app, days):
         Input("min-total-time-input", "value"),
         Input("max-total-time-input", "value"),
         Input("clinics-checklist", "value"),
-        Input("kios-g-column-radioItems", "value"),
-        Input("kios-column-radioItems", "value"),
-        Input("screen-column-radioItems", "value"),
-        Input("send-doc-column-radioItems", "value"),
-        Input("doc-call-column-radioItems", "value"),
-        Input("doc-begin-column-radioItems", "value"),
-        Input("doc-submit-column-radioItems", "value"),
-        Input("nurse-column-radioItems", "value"),
-        Input("payment-column-radioItems", "value"),
-        Input("pharmacy-column-radioItems", "value"),
         Input("checkpoints-ordering-dropdown", "value"),
         Input("checkpoints-ordering-radioItems", "value"),
         Input({"type": "start-checkpoint-dropdown", "index": ALL}, "value"),
         Input({"type": "end-checkpoint-dropdown", "index": ALL}, "value"),
         Input({"type": "min-btw-time-input", "index": ALL}, "value"),
-        Input({"type": "max-btw-time-input", "index": ALL}, "value")
+        Input({"type": "max-btw-time-input", "index": ALL}, "value"),
+        Input({"type": "datetime-column-radioItems", "index": ALL}, "value"),
+        State({"type": "datetime-column-radioItems", "index": ALL}, "id")
     )
-    def update_data_table(start_date, end_date, gender, final_status, appointment, min_age, max_age,
-                          min_start_time, max_start_time, min_total_time, max_total_time, clinics,
-                          kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                          doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, checkpoints, isOrdered,
-                          start_checkpoints, end_checkpoints, min_btw, max_btw):
+    def update_data_table(start_date, end_date, gender, final_status, appointment,
+                          min_age, max_age, min_start_time, max_start_time,
+                          min_total_time, max_total_time, clinics, checkpoints,
+                          isOrdered,start_checkpoints, end_checkpoints,
+                          min_btw, max_btw, datetime_columns, datetime_columns_id):
         # Filter data between given start date and end date
         filtered = filter_data_by_date(days, start_date, end_date)
         
@@ -88,10 +79,8 @@ def callback_data_table(app, days):
                 filtered = filtered[(~filtered["visit_dt"].dt.minute.isin([0, 30])) | (filtered["visit_dt"].dt.second != 0)]
         elif len(appointment) == 0:
             filtered = filtered[filtered["vn"] == -1]
-            
         # Filter datetime columns
-        for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
+        for col, value in datetime_columns_dict(datetime_columns_id, datetime_columns).items():
             if value == 1:
                 filtered = filtered[~filtered[col].isna()]
             elif value == 0:
@@ -128,10 +117,11 @@ def callback_data_table(app, days):
             
             filtered["time_btw"] = filtered[[start_checkpoints[index], end_checkpoints[index]]].apply(lambda columns: generate_time_btw(columns),
                                                                                                       axis=1)
-            filtered = filtered[(filtered["time_btw"] >= min_btw[index]) &
-                                (filtered["time_btw"] < max_btw[index]) |
-                                (filtered["time_btw"].isna())]
-            
+            if len(filtered) > 0:
+                filtered = filtered[(filtered["time_btw"] >= min_btw[index]) &
+                                    (filtered["time_btw"] < max_btw[index]) |
+                                    (filtered["time_btw"].isna())]
+                
             filtered.drop(["time_btw"], axis=1)
         
         # Filter visitors that have same checkpoint order with desired checkpoint ordering
@@ -226,23 +216,13 @@ def callback_checkpoints_ordering_dropdown(app, days):
     
     @app.callback(
         Output("checkpoints-ordering-dropdown", "options"),
-        Input("kios-g-column-radioItems", "value"),
-        Input("kios-column-radioItems", "value"),
-        Input("screen-column-radioItems", "value"),
-        Input("send-doc-column-radioItems", "value"),
-        Input("doc-call-column-radioItems", "value"),
-        Input("doc-begin-column-radioItems", "value"),
-        Input("doc-submit-column-radioItems", "value"),
-        Input("nurse-column-radioItems", "value"),
-        Input("payment-column-radioItems", "value"),
-        Input("pharmacy-column-radioItems", "value")
+        Input({"type": "datetime-column-radioItems", "index": ALL}, "value"),
+        State({"type": "datetime-column-radioItems", "index": ALL}, "id")
     )
-    def update_checkpoints_ordering_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                             doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt):
+    def update_checkpoints_ordering_dropdown(datetime_columns, datetime_columns_id):
         checkpoints = []
         
-        for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
+        for col, value in datetime_columns_dict(datetime_columns_id, datetime_columns).items():
             if value == 1:
                 checkpoints.append({"label": col, "value": col})
                 
@@ -274,29 +254,13 @@ def callback_all_datetime_columns_radioItems(app, days):
     """
     
     @app.callback(
-        Output("kios-g-column-radioItems", "options"),
-        Output("kios-column-radioItems", "options"),
-        Output("screen-column-radioItems", "options"),
-        Output("send-doc-column-radioItems", "options"),
-        Output("doc-call-column-radioItems", "options"),
-        Output("doc-begin-column-radioItems", "options"),
-        Output("doc-submit-column-radioItems", "options"),
-        Output("nurse-column-radioItems", "options"),
-        Output("payment-column-radioItems", "options"),
-        Output("pharmacy-column-radioItems", "options"),
-        Output("kios-g-column-radioItems", "value"),
-        Output("kios-column-radioItems", "value"),
-        Output("screen-column-radioItems", "value"),
-        Output("send-doc-column-radioItems", "value"),
-        Output("doc-call-column-radioItems", "value"),
-        Output("doc-begin-column-radioItems", "value"),
-        Output("doc-submit-column-radioItems", "value"),
-        Output("nurse-column-radioItems", "value"),
-        Output("payment-column-radioItems", "value"),
-        Output("pharmacy-column-radioItems", "value"),
+        Output({"type": "datetime-column-radioItems", "index": ALL}, "options"),
+        Output({"type": "datetime-column-radioItems", "index": ALL}, "value"),
         Input("all-datetime-columns", "value")
     )
     def update_all_datetime_columns_radioItems(all_datetime):
+        total_radioItems = 10
+        
         if all_datetime == 2:
             options = [
                 {"label": "มี / ไม่มี", "value": 2},
@@ -310,10 +274,7 @@ def callback_all_datetime_columns_radioItems(app, days):
                 {"label": "ไม่มี", "value": 0, "disabled": True}
             ]
             
-        return (options, options, options, options, options,
-                options, options, options, options, options,
-                all_datetime, all_datetime, all_datetime, all_datetime, all_datetime,
-                all_datetime, all_datetime, all_datetime, all_datetime, all_datetime)
+        return [options] * total_radioItems, [all_datetime] * total_radioItems
     
 def callback_time_between_checkpoints_main_division(app, days):
     """
@@ -342,71 +303,55 @@ def callback_time_between_checkpoints_main_division(app, days):
         main_div.append(new_element)
                 
         return main_div
-    
-def generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                  doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, first_checkpoints,
-                                  second_checkpoints, checkpoint, id, current):
-    """
-    Generate checkpoints dropdown options.
-    Change checkpoint dropdown value to None if that datetime column radioItem changed to 2 or 0.
-    """
-    
-    checkpoints = []
-        
-    for col, value in datetime_columns_dict(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                            doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt).items():
-        if value == 1:
-            checkpoints.append({"label": col, "value": col})
-    
-    if checkpoint != None:
-        if {"label": checkpoint, "value": checkpoint} in checkpoints:
-            checkpoints.remove({"label": checkpoint, "value": checkpoint})
-            
-        for index, value in enumerate(first_checkpoints):
-            if index == id["index"]:
-                continue
-            
-            if first_checkpoints[index] == checkpoint:
-                checkpoints.remove({"label": second_checkpoints[index], "value": second_checkpoints[index]})
-            elif second_checkpoints[index] == checkpoint:
-                checkpoints.remove({"label": first_checkpoints[index], "value": first_checkpoints[index]})
-            
-    return checkpoints
-    
+
 def callback_time_between_checkpoints_dropdown(app, days):
     """
-    Update time between checkpoints start and end dropdown.
+    Update options in start and end dropdown of time between checkpoints dropdown.
     """
     
     @app.callback(
         Output({"type": "start-checkpoint-dropdown", "index": MATCH}, "options"),
         Output({"type": "end-checkpoint-dropdown", "index": MATCH}, "options"),
-        Input("kios-g-column-radioItems", "value"),
-        Input("kios-column-radioItems", "value"),
-        Input("screen-column-radioItems", "value"),
-        Input("send-doc-column-radioItems", "value"),
-        Input("doc-call-column-radioItems", "value"),
-        Input("doc-begin-column-radioItems", "value"),
-        Input("doc-submit-column-radioItems", "value"),
-        Input("nurse-column-radioItems", "value"),
-        Input("payment-column-radioItems", "value"),
-        Input("pharmacy-column-radioItems", "value"),
+        Input("checkpoints-ordering-dropdown", "options"),
+        Input({"type": "start-checkpoint-dropdown", "index": MATCH}, "value"),
+        Input({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
         Input({"type": "start-checkpoint-dropdown", "index": ALL}, "value"),
         Input({"type": "end-checkpoint-dropdown", "index": ALL}, "value"),
-        Input({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
-        Input({"type": "start-checkpoint-dropdown", "index": MATCH}, "value"),
-        State({"type": "start-checkpoint-dropdown", "index": MATCH}, "id")
+        State({"type": "start-checkpoint-dropdown", "index": MATCH}, "id"),
     )
-    def update_time_between_checkpoints_start_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                                       doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, all_start_checkpoints,
-                                                       all_end_checkpoints, end_checkpoint, start_checkpoint, id):
-        print(end_checkpoint, start_checkpoint)
-        start = generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                              doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, all_start_checkpoints,
-                                              all_end_checkpoints, end_checkpoint, id, start_checkpoint)
-        
-        end = generate_checkpoints_dropdown(kios_g_dt, kios_dt, screen_dt, send_doc_dt, doc_call_dt, doc_begin_dt,
-                                            doc_submit_dt, nurse_dt, payment_dt, pharmacy_dt, all_start_checkpoints,
-                                            all_end_checkpoints, start_checkpoint, id, end_checkpoint)
+    def update_time_between_checkpoints_dropdown(checkpoints, start_checkpoint, end_checkpoint,
+                                                 start_checkpoints, end_checkpoints, dropdown_id):
+        def generate_checkpoint_dropdowns(checkpoints, opposite_checkpoint,
+                                          start_checkpoints, end_checkpoints,
+                                          dropdown_id):
+            """
+            Generate options for each checkpoint dropdown.
+            Change checkpoint dropdown values to None if the selected checkpoint is not 1.
+            """
 
-        return start, end
+            if opposite_checkpoint != None:
+                if {"label": opposite_checkpoint, "value": opposite_checkpoint} in checkpoints:
+                    checkpoints.remove({"label": opposite_checkpoint, "value": opposite_checkpoint})
+                    
+                for index, value in enumerate(start_checkpoints):
+                    if index == dropdown_id["index"]:
+                        continue
+                    
+                    if start_checkpoints[index] == opposite_checkpoint:
+                        if {"label": end_checkpoints[index], "value": end_checkpoints[index]} in checkpoints:
+                            checkpoints.remove({"label": end_checkpoints[index], "value": end_checkpoints[index]})
+                    if end_checkpoints[index] == opposite_checkpoint:
+                        if {"label": start_checkpoints[index], "value": start_checkpoints[index]} in checkpoints:
+                            checkpoints.remove({"label": start_checkpoints[index], "value": start_checkpoints[index]})
+            
+            return checkpoints
+        
+        start_dropdown = generate_checkpoint_dropdowns(checkpoints.copy(), end_checkpoint,
+                                                       start_checkpoints, end_checkpoints,
+                                                       dropdown_id)
+        
+        end_dropdown = generate_checkpoint_dropdowns(checkpoints.copy(), start_checkpoint,
+                                                     start_checkpoints, end_checkpoints,
+                                                     dropdown_id)
+
+        return start_dropdown, end_dropdown
