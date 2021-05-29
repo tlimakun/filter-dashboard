@@ -96,31 +96,46 @@ def filter_layout(days):
                         # KIOS G floor datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="KIOS-G Datetime:",
-                            id="kios-g-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "kios_g_dt"
+                            }
                         ),
                         
                         # KIOS datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="KIOS Datetime:",
-                            id="kios-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "kios_dt"
+                            }
                         ),
                         
                         # Nurse screen datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Nurse Screen Datetime:",
-                            id="screen-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "screen_dt"
+                            }
                         ),
                         
                         # Send to doctor datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Send to Doctor Datetime:",
-                            id="send-doc-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "send_doc_dt"
+                            }
                         ),
                         
                         # Doctor call datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Doctor Call Datetime:",
-                            id="doc-call-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "doc_call_dt"
+                            }
                         )
                     ], style=datetime_style),
                     
@@ -129,31 +144,46 @@ def filter_layout(days):
                         # Doctor begin datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Doctor Begin Datetime:",
-                            id="doc-begin-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "doc_begin_dt"
+                            }
                         ),
                         
                         # Doctor submit column radioItems
                         generate_require_datetime_radioItems(
                             label="Doctor Submit Datetime:",
-                            id="doc-submit-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "doc_submit_dt"
+                            }
                         ),
                         
                         # Nurse response datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Nurse Response Datetime:",
-                            id="nurse-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "nurse_dt"
+                            }
                         ),
                         
                         # Payment datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Payment Datetime:",
-                            id="payment-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "payment_dt"
+                            }
                         ),
                         
                         # Pharmacy datetime column radioItems
                         generate_require_datetime_radioItems(
                             label="Receive Pharmacy Datetime:",
-                            id="pharmacy-column-radioItems"
+                            id={
+                                "type": "datetime-column-radioItems",
+                                "index": "pharmacy_dt"
+                            }
                         )
                     ], style=datetime_style)
                 ], style={"display": "inline-block",
