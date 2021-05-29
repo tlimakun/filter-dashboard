@@ -312,6 +312,8 @@ def callback_time_between_checkpoints_dropdown(app, days):
     @app.callback(
         Output({"type": "start-checkpoint-dropdown", "index": MATCH}, "options"),
         Output({"type": "end-checkpoint-dropdown", "index": MATCH}, "options"),
+        Output({"type": "start-checkpoint-dropdown", "index": MATCH}, "value"),
+        Output({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
         Input("checkpoints-ordering-dropdown", "options"),
         Input({"type": "start-checkpoint-dropdown", "index": MATCH}, "value"),
         Input({"type": "end-checkpoint-dropdown", "index": MATCH}, "value"),
@@ -328,7 +330,7 @@ def callback_time_between_checkpoints_dropdown(app, days):
             Generate options for each checkpoint dropdown.
             Change checkpoint dropdown values to None if the selected checkpoint is not 1.
             """
-
+            
             if opposite_checkpoint != None:
                 if {"label": opposite_checkpoint, "value": opposite_checkpoint} in checkpoints:
                     checkpoints.remove({"label": opposite_checkpoint, "value": opposite_checkpoint})
@@ -337,21 +339,30 @@ def callback_time_between_checkpoints_dropdown(app, days):
                     if index == dropdown_id["index"]:
                         continue
                     
-                    if start_checkpoints[index] == opposite_checkpoint:
-                        if {"label": end_checkpoints[index], "value": end_checkpoints[index]} in checkpoints:
+                    if {"label": end_checkpoints[index], "value": end_checkpoints[index]} in checkpoints:
+                        if start_checkpoints[index] == opposite_checkpoint:
                             checkpoints.remove({"label": end_checkpoints[index], "value": end_checkpoints[index]})
-                    if end_checkpoints[index] == opposite_checkpoint:
-                        if {"label": start_checkpoints[index], "value": start_checkpoints[index]} in checkpoints:
+                            
+                    if {"label": start_checkpoints[index], "value": start_checkpoints[index]} in checkpoints:
+                        if end_checkpoints[index] == opposite_checkpoint:
                             checkpoints.remove({"label": start_checkpoints[index], "value": start_checkpoints[index]})
             
             return checkpoints
         
         start_dropdown = generate_checkpoint_dropdowns(checkpoints.copy(), end_checkpoint,
-                                                       start_checkpoints, end_checkpoints,
-                                                       dropdown_id)
+                                                       start_checkpoints, end_checkpoints, dropdown_id)
         
         end_dropdown = generate_checkpoint_dropdowns(checkpoints.copy(), start_checkpoint,
-                                                     start_checkpoints, end_checkpoints,
-                                                     dropdown_id)
-
-        return start_dropdown, end_dropdown
+                                                     start_checkpoints, end_checkpoints, dropdown_id)
+        
+        if {"label": start_checkpoint, "value": start_checkpoint} not in start_dropdown:
+            start_value = None
+        else:
+            start_value = start_checkpoint
+        
+        if {"label": end_checkpoint, "value": end_checkpoint} not in end_dropdown:
+            end_value = None
+        else:
+            end_value = end_checkpoint
+            
+        return start_dropdown, end_dropdown, start_value, end_value
